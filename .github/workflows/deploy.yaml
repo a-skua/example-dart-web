@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - ".editorconfig"
+      - ".gitignore"
+      - ".github/**"
+  workflow_dispatch: {}
+
+concurrency:
+  group: pages
+
+jobs:
+  build:
+    permissions:
+      contents: read
+
+    environment:
+      name: GitHub Pages Build
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - uses: actions/configure-pages@v4
+      - run: dart pub get
+      - run: make
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/deploy-pages@v4
