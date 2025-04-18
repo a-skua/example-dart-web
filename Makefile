@@ -1,4 +1,4 @@
-SRC := $(rhell find ./lib -name '*.dart')
+SRC := $(shell find ./lib -name '*.dart')
 
 .PHONY: all
 all: build/index.html build/styles.css build/bootstrap.js build/main.wasm build/main.wasm.map build/main.mjs
@@ -19,9 +19,14 @@ web/%.mjs: web/%.wasm
 web/%.wasm: web/%.dart $(SRC)
 	dart compile wasm $< -O4
 
+.PHONY: init
+init:
+	dart pub get
+
 .PHONY: fmt
 fmt:
-	deno fmt
+	@deno fmt
+	@dart format .
 
 .PHONY: serve
 serve: build/
