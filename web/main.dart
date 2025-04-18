@@ -1,9 +1,7 @@
+import 'package:example_dart_web/app.dart';
 import 'package:web/web.dart' as web;
 
 void main() {
-  final now = DateTime.now();
-  final element = web.document.querySelector('#output') as web.HTMLDivElement;
-  element.text =
-      'The time is ${now.hour}:${now.minute} '
-      'and your Dart web app is running!';
+  final element = web.document.querySelector('dart-web') as web.Element;
+  element.replaceWith(app);
 }
